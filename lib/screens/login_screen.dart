@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:meupsi_app/api_service.dart';
+import 'package:meupsi_app/app_routes.dart'; // Substitua pelo caminho correto do arquivo com a função fazerLogin
 
 class LoginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController senhaController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,30 +26,45 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20.0),
             TextField(
+              controller: emailController,
               decoration: InputDecoration(labelText: 'Email'),
             ),
             SizedBox(height: 10.0),
             TextField(
+              controller: senhaController,
               obscureText: true,
               decoration: InputDecoration(labelText: 'Senha'),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                // Adicionar lógica de autenticação aqui
+              onPressed: () async {
+                final email = emailController.text.trim();
+                final senha = senhaController.text.trim();
+
+                if (await fazerLogin(email, senha)) {
+                  // Login bem-sucedido, navegar para a próxima tela
+                  Navigator.pushNamed(context, AppRoutes.home);
+                } else {
+                  // Exibir uma mensagem de erro
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Login falhou. Verifique suas credenciais.'),
+                    ),
+                  );
+                }
               },
               child: Text('Login'),
             ),
             SizedBox(height: 10.0),
             TextButton(
               onPressed: () {
-                // Navegar para a tela de cadastro
+                Navigator.pushNamed(context, AppRoutes.cadastroUsuario);
               },
               child: Text('Cadastrar usuário'),
             ),
             TextButton(
               onPressed: () {
-                // Navegar para a tela de recuperação de senha
+                Navigator.pushNamed(context, AppRoutes.esqueciMinhaSenha);
               },
               child: Text('Esqueci minha senha'),
             ),
